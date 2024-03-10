@@ -63,6 +63,22 @@ func CreateExpenseReport(user string) (myRpc.MyRpcProcedure) {
 func removeExpenseReport() (myRpc.MyRpcProcedure) {
 	log.Println("Removing expense report")
 	//fp := "/user/" + user + "/expenses/open"
+	pathopen := "/user/" + "me" + "/expenses/open"
+	files, status := altEthos.SubFiles(pathopen)
+	if status != syscall.StatusOk {
+		log.Fatalf ("Error finding files %v\n", status)
+	}
+	if len(files) > 0{
+		for _,f:= range files {
+			p:=pathopen+"/"+f
+			status = altEthos.FileRemove(p)
+			if status != syscall.StatusOk {
+				log.Fatalf ("Error deleting submitted file %v\n", status)
+			}
+		}
+	} else {
+		log.Fatalf ("No files to delete")
+	}
 	return &myRpc.MyRpcRemoveItemExpenseReportReply{syscall.StatusOk}
 }
 
