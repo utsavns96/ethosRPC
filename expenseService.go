@@ -20,6 +20,7 @@ func init() {
 	//initializeAccounts("me")
 }
 
+//Done
 func initializeAccounts(user string){
 	log.Println("Initializing account for ", user)
 	altEthos.SetRootFs("")
@@ -43,23 +44,34 @@ func initializeAccounts(user string){
 	log.Println("folders initialized for " + user)
 }
 
-
+//Done
 func CreateExpenseReport(user string) (myRpc.MyRpcProcedure) {
 	log.Println("Creating expense report")
 	initializeAccounts(user)
 	//This function runs after creating dirs
-	fp := "/user/" + user + "/expenses/open/" + fmt.Sprintf("%v", altEthos.GetTime())
-	//var data1 []myRpc.MyType
-	data1 := myRpc.MyType{"name,","date,","description,",-999999}
-	//data1 = append(data1, &element)
-	//data1 := []string("name,date,description,-9999999")
-	status := altEthos.Write(fp, &data1)
+	pathopen := "/user/" + "me" + "/expenses/open"
+	files, status := altEthos.SubFiles(pathopen)
 	if status != syscall.StatusOk {
-		log.Fatalf ("Error creating expense report %v\n", status)
+		log.Fatalf ("Error finding files %v\n", status)
+	}
+	if len(files) > 0{
+		log.Fatalf ("Expense Report already open.")
+	} else {
+		fp := "/user/" + user + "/expenses/open/" + fmt.Sprintf("%v", altEthos.GetTime())
+		//var data1 []myRpc.MyType
+		//header
+		data1 := myRpc.MyType{"name,","date,","description,",-999999}
+		//data1 = append(data1, &element)
+		//data1 := []string("name,date,description,-9999999")
+		status := altEthos.Write(fp, &data1)
+		if status != syscall.StatusOk {
+			log.Fatalf ("Error creating expense report %v\n", status)
+		}
 	}
 	return &myRpc.MyRpcCreateExpenseReportReply{syscall.StatusOk}
 }
 
+//Done
 func removeExpenseReport() (myRpc.MyRpcProcedure) {
 	log.Println("Removing expense report")
 	//fp := "/user/" + user + "/expenses/open"
@@ -82,6 +94,7 @@ func removeExpenseReport() (myRpc.MyRpcProcedure) {
 	return &myRpc.MyRpcRemoveItemExpenseReportReply{syscall.StatusOk}
 }
 
+//Done
 func printExpenseReport() (myRpc.MyRpcProcedure) {
 	log.Println("Printing expense report for user ", altEthos.GetUser())
 	path := "/user/" + "me" + "/expenses/open"
@@ -115,6 +128,7 @@ func printExpenseReport() (myRpc.MyRpcProcedure) {
 	return &myRpc.MyRpcPrintExpenseReportReply{report1, syscall.StatusOk}
 }
 
+//Done
 func SubmitExpenseReport() (myRpc.MyRpcProcedure) {
 	//Copies files from open to submitted and deletes them from open
 	log.Println("Submitting expense report for user ", altEthos.GetUser())
@@ -206,6 +220,24 @@ func AddItemExpenseReport(name string, date string, description string, amount i
 }
 
 func RemoveItemExpenseReport(itemNumber int32) (myRpc.MyRpcProcedure) {
+	
+	pathopen := "/user/" + "me" + "/expenses/open"
+	files, status := altEthos.SubFiles(pathopen)
+	if status != syscall.StatusOk {
+		log.Fatalf ("Error finding files %v\n", status)
+	}
+	if len(files) > 0 && int32(len(files))>itemNumber{
+		f := files[itemNumber-1]
+		p:=pathopen+"/"+f
+		status = altEthos.FileRemove(p)
+		if status != syscall.StatusOk {
+			log.Fatalf ("Error deleting submitted file %v\n", status)
+		}
+		
+	} else {
+		log.Fatalf ("No items to delete")
+	}
+	
 	log.Println("item number %v removed ", itemNumber, " for user " ,altEthos.GetUser())
 	return &myRpc.MyRpcRemoveItemExpenseReportReply{syscall.StatusOk}
 }
