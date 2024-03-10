@@ -50,7 +50,7 @@ func CreateExpenseReport(user string) (myRpc.MyRpcProcedure) {
 	//This function runs after creating dirs
 	fp := "/user/" + user + "/expenses/open/" + fmt.Sprintf("%v", altEthos.GetTime())
 	//var data1 []myRpc.MyType
-	data1 := myRpc.MyType{"name,","date,","description",-999999}
+	data1 := myRpc.MyType{"name,","date,","description,",-999999}
 	//data1 = append(data1, &element)
 	//data1 := []string("name,date,description,-9999999")
 	status := altEthos.Write(fp, &data1)
@@ -69,8 +69,8 @@ func removeExpenseReport() (myRpc.MyRpcProcedure) {
 func printExpenseReport() (myRpc.MyRpcProcedure) {
 	log.Println("Printing expense report for user ", altEthos.GetUser())
 	path := "/user/" + "me" + "/expenses/open"
-	var report1 []myRpc.MyType
-	report := []string{"Alice", "Bob", "Cathy"}
+	var report1 []string
+	//report := []string{"Alice", "Bob", "Cathy"}
 	files, status := altEthos.SubFiles(path)
 	if status != syscall.StatusOk {
 		log.Fatalf ("Error finding files %v\n", status)
@@ -87,7 +87,7 @@ func printExpenseReport() (myRpc.MyRpcProcedure) {
 			log.Printf("Could not read %v\n", p)
 		}
 		log.Println("read ", p, v)
-		report1 = append(report1 , v)
+		report1 = append(report1 , fmt.Sprintf("%v", v))
 	}
 	//status = altEthos.Read(p, &v)
 	//if status!=syscall.StatusOk {
@@ -96,7 +96,7 @@ func printExpenseReport() (myRpc.MyRpcProcedure) {
 	//log.Println("read data: ", p, v)
 	
 	
-	return &myRpc.MyRpcPrintExpenseReportReply{report, syscall.StatusOk}
+	return &myRpc.MyRpcPrintExpenseReportReply{report1, syscall.StatusOk}
 }
 
 func SubmitExpenseReport() (myRpc.MyRpcProcedure) {
