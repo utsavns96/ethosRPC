@@ -10,7 +10,7 @@ import (
 func init() {
 	myRpc.SetupMyRpcPrintExpenseReportReply(printReply)
 	myRpc.SetupMyRpcAddItemExpenseReportReply(addItemReply)
-	myRpc.SetupMyRpcRemoveItemExpenseReportReply(removeExpenseReply)
+	myRpc.SetupMyRpcRemoveExpenseReportReply(removeExpenseReply)
 	myRpc.SetupMyRpcCreateExpenseReportReply(createReportReply)
 	myRpc.SetupMyRpcSubmitExpenseReportReply(submitExpenseReply)
 	myRpc.SetupMyRpcRemoveItemExpenseReportReply(removeExpenseReportReply)
@@ -50,7 +50,7 @@ func addItemReply(itemNumber int32, status syscall.Status) (myRpc.MyRpcProcedure
 	if status != syscall.StatusOk {
 		log.Printf("Adding item failed %v\n", status)
 	} else {
-		log.Println("Item added")
+		log.Println("Item added at position ", itemNumber)
 	}
 	return nil
 }
@@ -78,37 +78,72 @@ func main() {
 	altEthos.LogToDirectory("test/expenseClient")
 
 	log.Println("before call")
-
+	// call 1
 	fd, status := altEthos.IpcRepeat("myRpc", "", nil)
 	if status != syscall.StatusOk {
 		log.Printf("Ipc failed: %v\n", status)
 		altEthos.Exit(status)
 	}
-	
 	log.Println("Creating Report")
-	call1 := myRpc.MyRpcCreateExpenseReport{}
+	call1 := myRpc.MyRpcCreateExpenseReport{"me"}
 	status1 := altEthos.ClientCall(fd, &call1)
 	if status1 != syscall.StatusOk {
 		log.Printf("Creating report failed:_%v\n", status1)
 		altEthos.Exit(status1)
 	}
 	
-	//log.Println("Adding Item")
-	//call2 := myRpc.MyRpcAddItemExpenseReport{"abc", "12-01-2024", "test", 37}
-	//status2 := altEthos.ClientCall(fd, &call2)
-	//if status2 != syscall.StatusOk {
-	//	log.Printf("Adding item failed:_%v\n", status2)
-	//	altEthos.Exit(status2)
-	//}
+	//call 2
+	fd, status = altEthos.IpcRepeat("myRpc", "", nil)
+	if status != syscall.StatusOk {
+		log.Printf("Ipc failed: %v\n", status)
+		altEthos.Exit(status)
+	}
+	log.Println("Adding Item")
+	var amt int64 = 56
+	call2 := myRpc.MyRpcAddItemExpenseReport{"abc", "12Dec2024", "test", amt , "me"}
+	status2 := altEthos.ClientCall(fd, &call2)
+	if status2 != syscall.StatusOk {
+		log.Printf("Adding item failed:_%v\n", status2)
+		altEthos.Exit(status2)
+	}
 	
-	//log.Println("Removing Item")
-	//call3 := myRpc.MyRpcRemoveItemExpenseReport{35}
-	//status3 := altEthos.ClientCall(fd, &call3)
-	//if status3 != syscall.StatusOk {
-	//	log.Printf("Removing item failed:_%v\n", status3)
-	//	altEthos.Exit(status3)
-	//}
+		fd, status = altEthos.IpcRepeat("myRpc", "", nil)
+	if status != syscall.StatusOk {
+		log.Printf("Ipc failed: %v\n", status)
+		altEthos.Exit(status)
+	}
+	log.Println("Adding Item")
+	call2 = myRpc.MyRpcAddItemExpenseReport{"def", "13Dec2024", "best", 73 , "me"}
+	status2 = altEthos.ClientCall(fd, &call2)
+	if status2 != syscall.StatusOk {
+		log.Printf("Adding item failed:_%v\n", status2)
+		altEthos.Exit(status2)
+	}
 	
+	
+	
+	
+	//call 3
+	fd, status = altEthos.IpcRepeat("myRpc", "", nil)
+	if status != syscall.StatusOk {
+		log.Printf("Ipc failed: %v\n", status)
+		altEthos.Exit(status)
+	}
+	log.Println("Removing Item")
+	call3 := myRpc.MyRpcRemoveItemExpenseReport{35}
+	status3 := altEthos.ClientCall(fd, &call3)
+	if status3 != syscall.StatusOk {
+		log.Printf("Removing item failed:_%v\n", status3)
+		altEthos.Exit(status3)
+	}
+	log.Println("Removing Item Completed")
+	
+	//call4
+	fd, status = altEthos.IpcRepeat("myRpc", "", nil)
+	if status != syscall.StatusOk {
+		log.Printf("Ipc failed: %v\n", status)
+		altEthos.Exit(status)
+	}
 	log.Println("Printing Report")
 	call4 := myRpc.MyRpcPrintExpenseReport{}
 	status4 := altEthos.ClientCall(fd, &call4)
@@ -117,6 +152,12 @@ func main() {
 		altEthos.Exit(status4)
 	}
 	
+	//call 5
+	fd, status = altEthos.IpcRepeat("myRpc", "", nil)
+	if status != syscall.StatusOk {
+		log.Printf("Ipc failed: %v\n", status)
+		altEthos.Exit(status)
+	}
 	log.Println("Submitting Report")
 	call5 := myRpc.MyRpcSubmitExpenseReport{}
 	status5 := altEthos.ClientCall(fd, &call5)
@@ -124,7 +165,15 @@ func main() {
 		log.Printf("Submitting report failed:_%v\n", status5)
 		altEthos.Exit(status5)
 	}
+	log.Println("Submitting Report Completed")
 	
+	
+	//call6
+	fd, status = altEthos.IpcRepeat("myRpc", "", nil)
+	if status != syscall.StatusOk {
+		log.Printf("Ipc failed: %v\n", status)
+		altEthos.Exit(status)
+	}
 	log.Println("Deleting Report")
 	call6 := myRpc.MyRpcRemoveExpenseReport{}
 	status6 := altEthos.ClientCall(fd, &call6)
@@ -132,6 +181,7 @@ func main() {
 		log.Printf("Deleting report failed:_%v\n", status6)
 		altEthos.Exit(status6)
 	}
+	log.Println("Deleting Report Completed")
 	
 	log.Println("expenseClient: done")
 }

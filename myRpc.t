@@ -1,9 +1,9 @@
 MyRpc interface {
-	CreateExpenseReport() (status Status)
+	CreateExpenseReport(user string) (status Status)
 	RemoveExpenseReport() (status Status)
 	PrintExpenseReport() (list []string, status Status)
 	SubmitExpenseReport() (status Status)
-	AddItemExpenseReport(name string, date string, description string, amount int64) (itemNumber int32, status Status)
+	AddItemExpenseReport(name string, date string, description string, amount int64, user string) (itemNumber int32, status Status)
 	RemoveItemExpenseReport(itemNumber int32) (status Status)
 }
 
