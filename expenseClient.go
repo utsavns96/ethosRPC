@@ -85,7 +85,7 @@ func main() {
 		altEthos.Exit(status)
 	}
 	log.Println("Creating Report")
-	call1 := myRpc.MyRpcCreateExpenseReport{"me"}
+	call1 := myRpc.MyRpcCreateExpenseReport{altEthos.GetUser()}
 	status1 := altEthos.ClientCall(fd, &call1)
 	if status1 != syscall.StatusOk {
 		log.Printf("Creating report failed:_%v\n", status1)
@@ -99,7 +99,7 @@ func main() {
 		altEthos.Exit(status)
 	}
 	log.Println("Adding Item")
-	call2 := myRpc.MyRpcAddItemExpenseReport{"abc", "12-01-2024", "test", 65 , "me"}
+	call2 := myRpc.MyRpcAddItemExpenseReport{"abc", "12-01-2024", "test", 65 , altEthos.GetUser()}
 	status2 := altEthos.ClientCall(fd, &call2)
 	if status2 != syscall.StatusOk {
 		log.Printf("Adding item failed:_%v\n", status2)
@@ -113,7 +113,7 @@ func main() {
 		altEthos.Exit(status)
 	}
 	log.Println("Adding Item")
-	call2 = myRpc.MyRpcAddItemExpenseReport{"def", "13-01-2024", "best", 73 , "me"}
+	call2 = myRpc.MyRpcAddItemExpenseReport{"def", "13-01-2024", "best", 73 , altEthos.GetUser()}
 	status2 = altEthos.ClientCall(fd, &call2)
 	if status2 != syscall.StatusOk {
 		log.Printf("Adding item failed:_%v\n", status2)
@@ -130,7 +130,7 @@ func main() {
 		altEthos.Exit(status)
 	}
 	log.Println("Removing Item")
-	call3 := myRpc.MyRpcRemoveItemExpenseReport{1}
+	call3 := myRpc.MyRpcRemoveItemExpenseReport{1, altEthos.GetUser()}
 	status3 := altEthos.ClientCall(fd, &call3)
 	if status3 != syscall.StatusOk {
 		log.Printf("Removing item failed:_%v\n", status3)
@@ -145,7 +145,7 @@ func main() {
 		altEthos.Exit(status)
 	}
 	log.Println("Printing Report")
-	call4 := myRpc.MyRpcPrintExpenseReport{}
+	call4 := myRpc.MyRpcPrintExpenseReport{altEthos.GetUser()}
 	status4 := altEthos.ClientCall(fd, &call4)
 	if status4 != syscall.StatusOk {
 		log.Printf("Printing report failed:_%v\n", status4)
@@ -159,7 +159,7 @@ func main() {
 		altEthos.Exit(status)
 	}
 	log.Println("Submitting Report")
-	call5 := myRpc.MyRpcSubmitExpenseReport{}
+	call5 := myRpc.MyRpcSubmitExpenseReport{altEthos.GetUser()}
 	status5 := altEthos.ClientCall(fd, &call5)
 	if status5 != syscall.StatusOk {
 		log.Printf("Submitting report failed:_%v\n", status5)
@@ -175,7 +175,7 @@ func main() {
 		altEthos.Exit(status)
 	}
 	log.Println("Deleting Report")
-	call6 := myRpc.MyRpcRemoveExpenseReport{}
+	call6 := myRpc.MyRpcRemoveExpenseReport{altEthos.GetUser()}
 	status6 := altEthos.ClientCall(fd, &call6)
 	if status6 != syscall.StatusOk {
 		log.Printf("Deleting report failed:_%v\n", status6)
