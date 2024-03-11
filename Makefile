@@ -16,7 +16,7 @@ export MINIMALTDROOT=client/minimaltdfs
 
 
 .PHONY: all install clean
-all: expenseClient expenseService
+all: expenseService expenseClient expenseClient2
 
 ethos:
 	mkdir ethos
@@ -39,6 +39,9 @@ expenseService: expenseService.go myRpc.goo.ethos
 #myType.goo.ethos
 expenseClient: expenseClient.go myRpc.goo.ethos 
 	ethosGo expenseClient.go
+	
+expenseClient2: expenseClient2.go myRpc.goo.ethos 
+	ethosGo expenseClient2.go
 
 # install types, service,
 install: all
@@ -46,9 +49,10 @@ install: all
 	(ethosParams client && cd client && ethosMinimaltdBuilder)
 	ethosTypeInstall myRpc
 	ethosDirCreate $(ETHOSROOT)/services/myRpc   $(ETHOSROOT)/types/spec/myRpc/MyRpc all
-	install -D  expenseClient expenseService                   $(ETHOSROOT)/programs
+	install -D  expenseClient expenseClient2 expenseService                   $(ETHOSROOT)/programs
 	ethosStringEncode /programs/expenseService    > $(ETHOSROOT)/etc/init/services/expenseService
 	ethosStringEncode /programs/expenseClient       > $(ETHOSROOT)/etc/init/services/expenseClient
+	ethosStringEncode /programs/expenseClient2       > $(ETHOSROOT)/etc/init/services/expenseClient2
 
 # remove build artifacts
 clean:
@@ -56,7 +60,10 @@ clean:
 	rm -f myRpc.go
 	rm -f expenseClient
 	rm -f expenseService
+	rm -f expenseClient2
+	rm -f expenseService.goo.ethos 
 	rm -f expenseClient.goo.ethos 
+	rm -f expenseClient2.goo.ethos 
 	rm -f myRpc.goo.ethos
 	rm -rf myType/ myTypeIndex/ client ethos
 	rm -f myType.go

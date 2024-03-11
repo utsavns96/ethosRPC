@@ -75,9 +75,9 @@ func submitExpenseReply(status syscall.Status) (myRpc.MyRpcProcedure) {
 
 func main() {
 
-	altEthos.LogToDirectory("test/expenseClient")
+	altEthos.LogToDirectory("test/expenseClient2")
 	//user := altEthos.GetUser()
-	user := "me"
+	user := "nobody"
 	log.Println("before call")
 	// call 1 - Creating report
 	fd, status := altEthos.IpcRepeat("myRpc", "", nil)
@@ -115,20 +115,6 @@ func main() {
 	}
 	log.Println("Adding Item")
 	call2 = myRpc.MyRpcAddItemExpenseReport{"def", "13-01-2024", "best", 73 , user}
-	status2 = altEthos.ClientCall(fd, &call2)
-	if status2 != syscall.StatusOk {
-		log.Printf("Adding item failed:_%v\n", status2)
-		altEthos.Exit(status2)
-	}
-	
-	//Adding 3rd item
-		fd, status = altEthos.IpcRepeat("myRpc", "", nil)
-	if status != syscall.StatusOk {
-		log.Printf("Ipc failed: %v\n", status)
-		altEthos.Exit(status)
-	}
-	log.Println("Adding Item")
-	call2 = myRpc.MyRpcAddItemExpenseReport{"ghi", "14-01-2024", "rest", 55 , user}
 	status2 = altEthos.ClientCall(fd, &call2)
 	if status2 != syscall.StatusOk {
 		log.Printf("Adding item failed:_%v\n", status2)
@@ -182,6 +168,33 @@ func main() {
 	}
 	log.Println("Submitting Report Completed")
 	
+	// call 6 - Creating new report
+	fd, status = altEthos.IpcRepeat("myRpc", "", nil)
+	if status != syscall.StatusOk {
+		log.Printf("Ipc failed: %v\n", status)
+		altEthos.Exit(status)
+	}
+	log.Println("Creating Report")
+	call1 = myRpc.MyRpcCreateExpenseReport{user}
+	status1 = altEthos.ClientCall(fd, &call1)
+	if status1 != syscall.StatusOk {
+		log.Printf("Creating report failed:_%v\n", status1)
+		altEthos.Exit(status1)
+	}
+	
+	// Adding item
+	fd, status = altEthos.IpcRepeat("myRpc", "", nil)
+	if status != syscall.StatusOk {
+		log.Printf("Ipc failed: %v\n", status)
+		altEthos.Exit(status)
+	}
+	log.Println("Adding Item")
+	call2 = myRpc.MyRpcAddItemExpenseReport{"xyz", "01-01-2024", "qwerty", 123 , user}
+	status2 = altEthos.ClientCall(fd, &call2)
+	if status2 != syscall.StatusOk {
+		log.Printf("Adding item failed:_%v\n", status2)
+		altEthos.Exit(status2)
+	}
 	
 	//call6 - deleting report
 	fd, status = altEthos.IpcRepeat("myRpc", "", nil)

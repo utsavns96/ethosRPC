@@ -96,7 +96,7 @@ func removeExpenseReport(user string) (myRpc.MyRpcProcedure) {
 
 //Done
 func printExpenseReport(user string) (myRpc.MyRpcProcedure) {
-	log.Println("Printing expense report for user ", altEthos.GetUser())
+	log.Println("Printing expense report for user ", user)
 	path := "/user/" + user + "/expenses/open"
 	var report1 []string
 	//report := []string{"Alice", "Bob", "Cathy"}
@@ -115,7 +115,7 @@ func printExpenseReport(user string) (myRpc.MyRpcProcedure) {
 		if status!=syscall.StatusOk {
 			log.Printf("Could not read %v\n", p)
 		}
-		log.Println("read ", p, v)
+		//log.Println("read ", p, v)
 		report1 = append(report1 , fmt.Sprintf("%v", v))
 	}
 	//status = altEthos.Read(p, &v)
